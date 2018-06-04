@@ -15,6 +15,16 @@ function renderCloud(ctx, x, y, color) {
   ctx.fillRect(x, y, CLOUD_WIDTH, CLOUD_HEIGHT);
 }
 
+function renderBar(ctx, x, y, width, height, color) {
+  ctx.fillStyle = color;
+  ctx.fillRect(x, y, width, height);
+}
+
+function createText(ctx, text, x, y, color) {
+  ctx.fillStyle = color;
+  ctx.fillText(text, x, y);
+}
+
 function getRandomInteger(min, max) {
   return Math.floor(Math.random() * (max + 1 - min) + min);
 }
@@ -48,21 +58,22 @@ window.renderStatistics = function (ctx, names, times) {
   ctx.font = '16px PT Mono';
   ctx.textBaseline = 'hanging';
 
-  ctx.fillStyle = '#000';
-  ctx.fillText('Ура вы победили!', CLOUD_X + SHIFT * 10, VERTICAL_SHIFT);
-  ctx.fillText('Список результатов:', CLOUD_X + SHIFT * 10, VERTICAL_SHIFT * 2);
+  createText(ctx, 'Ура вы победили!', CLOUD_X + SHIFT * 10, VERTICAL_SHIFT, '#000');
+  createText(ctx, 'Список результатов:', CLOUD_X + SHIFT * 10, VERTICAL_SHIFT * 2, '#000');
 
   var maxTime = Math.round(getMaxElement(times));
 
   for (var i = 0; i < names.length; i++) {
-    ctx.fillStyle = '#000';
-    ctx.fillText(Math.round(times[i]), CLOUD_X + SHIFT * 5 + (BAR_WIDTH * 2 + SHIFT) * i, CLOUD_HEIGHT - BAR_HEIGHT * times[i] / maxTime - SHIFT - TEXT_HEIGHT - VERTICAL_SHIFT);
-    ctx.fillStyle = getRandomBlueShade();
+    createText(ctx, Math.round(times[i]), CLOUD_X + SHIFT * 5 + (BAR_WIDTH * 2 + SHIFT) * i, CLOUD_HEIGHT - BAR_HEIGHT * times[i] / maxTime - SHIFT - TEXT_HEIGHT - VERTICAL_SHIFT, '#000');
+
+    renderBar(ctx, CLOUD_X + SHIFT * 5 + (BAR_WIDTH * 2 + SHIFT) * i, CLOUD_HEIGHT - (BAR_HEIGHT * times[i]) / maxTime - SHIFT - TEXT_HEIGHT, BAR_WIDTH, (BAR_HEIGHT * times[i]) / maxTime, getRandomBlueShade());
+
     if (names[i] === 'Вы') {
-      ctx.fillStyle = 'rgba(255, 0, 0, 1)';
+      renderBar(ctx, CLOUD_X + SHIFT * 5 + (BAR_WIDTH * 2 + SHIFT) * i, CLOUD_HEIGHT - (BAR_HEIGHT * times[i]) / maxTime - SHIFT - TEXT_HEIGHT, BAR_WIDTH, (BAR_HEIGHT * times[i]) / maxTime, 'rgba(255, 0, 0, 1)');
+    } else {
+      renderBar(ctx, CLOUD_X + SHIFT * 5 + (BAR_WIDTH * 2 + SHIFT) * i, CLOUD_HEIGHT - (BAR_HEIGHT * times[i]) / maxTime - SHIFT - TEXT_HEIGHT, BAR_WIDTH, (BAR_HEIGHT * times[i]) / maxTime, getRandomBlueShade());
     }
-    ctx.fillRect(CLOUD_X + SHIFT * 5 + (BAR_WIDTH * 2 + SHIFT) * i, CLOUD_HEIGHT - (BAR_HEIGHT * times[i]) / maxTime - SHIFT - TEXT_HEIGHT, BAR_WIDTH, (BAR_HEIGHT * times[i]) / maxTime);
-    ctx.fillStyle = '#000';
-    ctx.fillText(names[i], CLOUD_X + SHIFT * 5 + (BAR_WIDTH * 2 + SHIFT) * i, CLOUD_HEIGHT - VERTICAL_SHIFT);
+
+    createText(ctx, names[i], CLOUD_X + SHIFT * 5 + (BAR_WIDTH * 2 + SHIFT) * i, CLOUD_HEIGHT - VERTICAL_SHIFT, '#000');
   }
 };
